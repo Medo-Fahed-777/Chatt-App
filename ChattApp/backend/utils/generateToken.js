@@ -4,8 +4,8 @@ dotenv.config()
 
 const JWT_SECRET = process.env.JWT_SECRET
 
-const generateTokenAndSetCookie = ( userId , role ,  res) => {
-  const token = jwt.sign({userId,role} , JWT_SECRET ,{
+const generateTokenAndSetCookie = ( userId ,   res) => {
+  const token = jwt.sign({userId} , JWT_SECRET ,{
     expiresIn:'5d'
   })
   res.cookie('jwt' , token , {

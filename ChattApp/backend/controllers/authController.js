@@ -11,16 +11,7 @@ export const register = async (req,res) => {
       email,
       password,
       phone,
-      role,
       confirmPassword,
-      gender,
-      location,
-      university,
-      yearOfStudy,
-      birthDate,
-      studentId,
-      workDays,
-      services,
     } = req.body
     // console.log(req.body.firstName,'fullName');
     if(password !== confirmPassword){
@@ -33,30 +24,20 @@ export const register = async (req,res) => {
     const hashPassword = await bcrypt.hash(password,12)
 
     const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${firstName} ${lastName}`
-    const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${firstName} ${lastName}`
-
+    
     const newUser = new User({
       firstName,
       lastName,
       email,
       phone,
       password:hashPassword,
-      role,
-      gender,
-      profilePic: gender === 'male' ? boyProfilePic : girlProfilePic,
-      location,
-      university,
-      yearOfStudy,
-      birthDate,
-      studentId,
-      workDays,
-      services,
+      profilePic:boyProfilePic
     })
     if(newUser){
-      generateTokenAndSetCookie(newUser._id , newUser.role ,res)
+      generateTokenAndSetCookie(newUser._id , res)
     }
     await newUser.save()
-    console.log("newUser",newUser.firstName);
+    // console.log("newUser",newUser.firstName);
     res.status(201).json(newUser)
   } catch (error) {
     console.log('Error In Register',error.message);
@@ -74,14 +55,13 @@ export const login = async (req , res) => {
     if(!user || !isPasswordCorrect){
       return res.status(400).json({error: 'Incorrect Coordinates!'})
     }
-    const token =   generateTokenAndSetCookie(user._id , user.role ,  res)
+    const token =   generateTokenAndSetCookie(user._id ,  res)
     res.status(200).json({ 
       _id:user._id,
       firstName:user.firstName,
       lastName:user.lastName,
       profilePic:user.profilePic,
       email:user.email,
-      role:user.role,
       token
     })
   } catch (error) {
